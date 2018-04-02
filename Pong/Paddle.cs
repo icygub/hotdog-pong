@@ -8,22 +8,25 @@ namespace Pong
 {
     public class Paddle : Sprite
     {
-        public Paddle(Texture2D texture, Vector2 location) : base(texture, location)
+        private readonly Rectangle screenBounds;
+
+        public Paddle(Texture2D texture, Vector2 location, Rectangle screenBounds) : base(texture, location)
         {
+            this.screenBounds = screenBounds;
         }
 
         public override void Update(GameTime gameTime, GameObjects gameObjects)
         {
             
             //move up
-            if (Keyboard.GetState().IsKeyDown(Keys.Left) || gameObjects.TouchInput.Up)
+            if (gameObjects.TouchInput.Up)
             {
-                velocity = new Vector2(0, -17f);
+                Velocity = new Vector2(0, -17f);
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Right) || gameObjects.TouchInput.Down)
+            if (gameObjects.TouchInput.Down)
             {
-                velocity = new Vector2(0, 17f);
+                Velocity = new Vector2(0, 17f);
             }
 
             base.Update(gameTime, gameObjects);
@@ -34,32 +37,53 @@ namespace Pong
             base.Draw(spriteBatch);
         }
 
-
+        protected override void CheckBounds()
+        {
+            Location.Y = MathHelper.Clamp(Location.Y, 0, screenBounds.Height - texture.Height);
+        }
     }
 
-    public class Sprite
+    public abstract class Sprite
     {
-        private readonly Texture2D texture;
-        private Vector2 location;
-        protected Vector2 velocity = Vector2.Zero;
+        public Texture2D texture;
+        public Vector2 Location;
+        public int Width { get => texture.Width; }
+        public int Height { get => texture.Height; }
 
-        public Sprite(Texture2D texture, Vector2 location)
+        public Vector2 Velocity { get; protected set; }
+        //private Vector2 _velocity;
+
+
+        protected Sprite(Texture2D texture, Vector2 location)
         {
             this.texture = texture;
-            this.location = location;
+            Location = location;
+            Velocity = Vector2.Zero;
         }
+
+        
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, location);
+            spriteBatch.Draw(texture, Location);
         }
 
         public virtual void Update(GameTime gameTime, GameObjects gameObjects)
         {
-            location += velocity;
-            
+            Location += Velocity;
+            CheckBounds();
         }
 
+        public virtual void Update(GameTime gameTime)
+        {
+            Location += Velocity;
+            CheckBounds();
+        }
+
+        protected abstract void CheckBounds();
+        
+            
+        
     }
 
         

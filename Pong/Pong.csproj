@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activity1.cs" />
+    <Compile Include="Ball.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameObjects.cs" />
     <Compile Include="Paddle.cs" />
@@ -93,6 +94,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\hotdog.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\weiner.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

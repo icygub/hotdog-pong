@@ -17,6 +17,7 @@ namespace Pong
         private GameObjects gameObjects;
 
         private Paddle paddle;
+        private Ball ball;
         //private Texture2D hotdog;
         //private Texture2D hotdog2;
         //private TouchPanel touchPanel;
@@ -59,8 +60,9 @@ namespace Pong
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            paddle = new Paddle(Content.Load<Texture2D>("graphics/hotdog2"), Vector2.Zero);
-
+            paddle = new Paddle(Content.Load<Texture2D>("graphics/hotdog2"), Vector2.Zero, new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height));
+            ball = new Ball(Content.Load<Texture2D>("graphics/weiner"), Vector2.Zero);
+            ball.AttachTo(paddle);
             //hotdog = Content.Load<Texture2D>("graphics/hotdog2");
             //hotdog2 = Content.Load<Texture2D>("graphics/hotdog2");
 
@@ -90,7 +92,7 @@ namespace Pong
             GetTouchInput();
 
             paddle.Update(gameTime, gameObjects);
-
+            ball.Update(gameTime, gameObjects);
             base.Update(gameTime);
         }
 
@@ -107,6 +109,10 @@ namespace Pong
                 {
                     gameObjects.TouchInput.Up = true;
                 }
+                if(gesture.Delta.Y == 0)
+                {
+                    gameObjects.TouchInput.Tap = true;
+                }
 
 
             }
@@ -122,6 +128,7 @@ namespace Pong
 
             spriteBatch.Begin();
             paddle.Draw(spriteBatch);
+            ball.Draw(spriteBatch);
             //spriteBatch.Draw(hotdog, position: Vector2.Zero);
 
             spriteBatch.End();
