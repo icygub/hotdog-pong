@@ -6,10 +6,7 @@
         private bool _down;
         private bool _tap;
 
-        public TouchInput()
-        {
-
-        }
+        public TouchInput() { }
 
         public bool Up { get => _up; set => _up = value; }
         public bool Down { get => _down; set => _down = value; }

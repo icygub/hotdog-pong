@@ -16,7 +16,8 @@ namespace Pong
         SpriteBatch spriteBatch;
         private GameObjects gameObjects;
 
-        private Paddle paddle;
+        private Paddle playerPaddle;
+        private Paddle computerPaddle;
         private Ball ball;
         //private Texture2D hotdog;
         //private Texture2D hotdog2;
@@ -60,9 +61,15 @@ namespace Pong
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            paddle = new Paddle(Content.Load<Texture2D>("graphics/hotdog2"), Vector2.Zero, new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height));
-            ball = new Ball(Content.Load<Texture2D>("graphics/weiner"), Vector2.Zero);
-            ball.AttachTo(paddle);
+            var gameBoundaries = new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height);
+            var plaindogPaddleTexture = Content.Load<Texture2D>("graphics/plain_hotdog");
+            var combodogPaddleTexture = Content.Load<Texture2D>("graphics/combo_dog");
+            playerPaddle = new Paddle(combodogPaddleTexture, Vector2.Zero, gameBoundaries);
+            var computerPaddleLocation = new Vector2(gameBoundaries.Width - plaindogPaddleTexture.Width, 0);
+            computerPaddle = new Paddle(plaindogPaddleTexture, computerPaddleLocation, gameBoundaries);
+
+            ball = new Ball(Content.Load<Texture2D>("graphics/weiner"), Vector2.Zero, gameBoundaries);
+            ball.AttachTo(playerPaddle);
             //hotdog = Content.Load<Texture2D>("graphics/hotdog2");
             //hotdog2 = Content.Load<Texture2D>("graphics/hotdog2");
 
@@ -91,7 +98,8 @@ namespace Pong
             gameObjects.TouchInput = new TouchInput(); //game crashes when this line runs
             GetTouchInput();
 
-            paddle.Update(gameTime, gameObjects);
+            playerPaddle.Update(gameTime, gameObjects);
+            computerPaddle.Update(gameTime, gameObjects);
             ball.Update(gameTime, gameObjects);
             base.Update(gameTime);
         }
@@ -127,7 +135,8 @@ namespace Pong
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            paddle.Draw(spriteBatch);
+            playerPaddle.Draw(spriteBatch);
+            computerPaddle.Draw(spriteBatch);
             ball.Draw(spriteBatch);
             //spriteBatch.Draw(hotdog, position: Vector2.Zero);
 
