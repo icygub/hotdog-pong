@@ -1,6 +1,9 @@
+using System;
+using Android.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
 
 namespace Pong
 {
@@ -11,16 +14,25 @@ namespace Pong
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        private GameObjects gameObjects;
+
+        private Paddle paddle;
+        //private Texture2D hotdog;
+        //private Texture2D hotdog2;
+        //private TouchPanel touchPanel;
+
 
         public Game1()
         {
+
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
             graphics.IsFullScreen = true;
-            graphics.PreferredBackBufferWidth = 800;
-            graphics.PreferredBackBufferHeight = 480;
+            //graphics.PreferredBackBufferWidth = 800;
+            //graphics.PreferredBackBufferHeight = 480;
             graphics.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
+            gameObjects = new GameObjects();
         }
 
         /// <summary>
@@ -33,6 +45,8 @@ namespace Pong
         {
             // TODO: Add your initialization logic here
 
+            TouchPanel.EnabledGestures = GestureType.VerticalDrag | GestureType.Flick | GestureType.Tap;
+            
             base.Initialize();
         }
 
@@ -44,6 +58,11 @@ namespace Pong
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            paddle = new Paddle(Content.Load<Texture2D>("graphics/hotdog2"), Vector2.Zero);
+
+            //hotdog = Content.Load<Texture2D>("graphics/hotdog2");
+            //hotdog2 = Content.Load<Texture2D>("graphics/hotdog2");
 
             // TODO: use this.Content to load your game content here
         }
@@ -67,9 +86,30 @@ namespace Pong
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 Exit();
 
-            // TODO: Add your update logic here
+            gameObjects.TouchInput = new TouchInput(); //game crashes when this line runs
+            GetTouchInput();
+
+            paddle.Update(gameTime, gameObjects);
 
             base.Update(gameTime);
+        }
+
+        private void GetTouchInput()
+        {
+            while(TouchPanel.IsGestureAvailable)
+            {
+                var gesture = TouchPanel.ReadGesture();
+                if(gesture.Delta.Y > 0)
+                {
+                    gameObjects.TouchInput.Down = true;
+                }
+                if(gesture.Delta.Y < 0)
+                {
+                    gameObjects.TouchInput.Up = true;
+                }
+
+
+            }
         }
 
         /// <summary>
@@ -80,9 +120,15 @@ namespace Pong
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            paddle.Draw(spriteBatch);
+            //spriteBatch.Draw(hotdog, position: Vector2.Zero);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
     }
+
+ 
 }
