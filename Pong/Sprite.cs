@@ -12,6 +12,12 @@ namespace Pong
         public int Width { get => texture.Width; }
         public int Height { get => texture.Height; }
 
+        public Rectangle BoundingBox {
+            get {
+                return new Rectangle((int)Location.X, (int)Location.Y, Width, Height);
+            }
+        }
+
         public Vector2 Velocity { get; protected set; }
         //private Vector2 _velocity;
 
@@ -44,11 +50,7 @@ namespace Pong
             CheckBounds();
         }
 
-        public virtual void Update(GameTime gameTime)
-        {
-            Location += Velocity;
-            CheckBounds();
-        }
+        
 
         protected abstract void CheckBounds();
         

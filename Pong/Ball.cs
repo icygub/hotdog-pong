@@ -38,7 +38,7 @@ namespace Pong
             // fires the "ball"
             if (gameObjects.TouchInput.Tap && attachedToPaddle != null)
             {
-                var newVelocity = new Vector2(15f, attachedToPaddle.Velocity.Y);
+                var newVelocity = new Vector2(15f, attachedToPaddle.Velocity.Y * 1.2f);
                 Velocity = newVelocity;
                 attachedToPaddle = null;
                 
@@ -50,13 +50,26 @@ namespace Pong
                 Location.Y = attachedToPaddle.Location.Y;
                 Location.X = attachedToPaddle.Location.X + attachedToPaddle.Width;
             }
+            //else if (BoundingBox.Intersects(gameObjects.PlayerPaddle.BoundingBox) && 
+            //    (BoundingBox.X >= gameObjects.PlayerPaddle.BoundingBox.X && BoundingBox.X <= gameObjects.PlayerPaddle.BoundingBox.X) ||
+            //    BoundingBox.Intersects(gameObjects.ComputerPaddle.BoundingBox) && (BoundingBox.Bottom == gameObjects.ComputerPaddle.BoundingBox.Top))
+            //{
+            //    Velocity = new Vector2(Velocity.X, -Velocity.Y);
+            //    Console.Write("First case");
+            //}
+            else if (BoundingBox.Intersects(gameObjects.PlayerPaddle.BoundingBox) || BoundingBox.Intersects(gameObjects.ComputerPaddle.BoundingBox))
+            {
+                Velocity = new Vector2(-Velocity.X, Velocity.Y);
+                Console.Write("Second case");
+            }
 
 
-            base.Update(gameTime);
+            base.Update(gameTime, gameObjects);
         }
 
         public void AttachTo(Paddle paddle)
         {
+            Console.Write("testing");
             attachedToPaddle = paddle;
             Location.X = attachedToPaddle.Width;
         }

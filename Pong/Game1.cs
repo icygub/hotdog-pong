@@ -12,6 +12,9 @@ namespace Pong
     /// </summary>
     public class Game1 : Game
     {
+        private Texture2D plaindogPaddleTexture;
+        private Texture2D combodogPaddleTexture;
+        private Texture2D ballTexture;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private GameObjects gameObjects;
@@ -19,6 +22,13 @@ namespace Pong
         private Paddle playerPaddle;
         private Paddle computerPaddle;
         private Ball ball;
+        private Vector2 ballOrigin;
+        private Vector2 ballPosition;
+        private Rectangle ballRectangle;
+        private float rotation;
+        private Vector2 ballLocation;
+        private Rectangle sourceRectangle;
+        private Score score;
         //private Texture2D hotdog;
         //private Texture2D hotdog2;
         //private TouchPanel touchPanel;
@@ -29,7 +39,7 @@ namespace Pong
 
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-
+            
             graphics.IsFullScreen = true;
             //graphics.PreferredBackBufferWidth = 800;
             //graphics.PreferredBackBufferHeight = 480;
@@ -62,18 +72,22 @@ namespace Pong
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             var gameBoundaries = new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height);
-            var plaindogPaddleTexture = Content.Load<Texture2D>("graphics/plain_hotdog");
-            var combodogPaddleTexture = Content.Load<Texture2D>("graphics/combo_dog");
-            playerPaddle = new Paddle(combodogPaddleTexture, Vector2.Zero, gameBoundaries);
+            combodogPaddleTexture = Content.Load<Texture2D>("graphics/combo_dog");
+            plaindogPaddleTexture = Content.Load<Texture2D>("graphics/plain_hotdog");
+            ballTexture           = Content.Load<Texture2D>("graphics/weiner");
+            
+            playerPaddle = new Paddle(combodogPaddleTexture, Vector2.Zero, gameBoundaries, PlayerTypes.Human);
             var computerPaddleLocation = new Vector2(gameBoundaries.Width - plaindogPaddleTexture.Width, 0);
-            computerPaddle = new Paddle(plaindogPaddleTexture, computerPaddleLocation, gameBoundaries);
+            computerPaddle = new Paddle(plaindogPaddleTexture, computerPaddleLocation, gameBoundaries, PlayerTypes.Computer);
 
-            ball = new Ball(Content.Load<Texture2D>("graphics/weiner"), Vector2.Zero, gameBoundaries);
+            ball = new Ball(ballTexture, Vector2.Zero, gameBoundaries);
             ball.AttachTo(playerPaddle);
-            //hotdog = Content.Load<Texture2D>("graphics/hotdog2");
-            //hotdog2 = Content.Load<Texture2D>("graphics/hotdog2");
 
-            // TODO: use this.Content to load your game content here
+            score = new Score(Content.Load<SpriteFont>("fonts/HighScoreFont"), gameBoundaries);
+
+            //gameObjects = new GameObjects { PlayerPaddle = playerPaddle, ComputerPaddle = computerPaddle, Ball = ball};
+            gameObjects = new GameObjects { PlayerPaddle = playerPaddle, ComputerPaddle = computerPaddle, Ball = ball, Score = score };
+
         }
 
         /// <summary>
@@ -82,7 +96,7 @@ namespace Pong
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            
         }
 
         /// <summary>
@@ -101,6 +115,11 @@ namespace Pong
             playerPaddle.Update(gameTime, gameObjects);
             computerPaddle.Update(gameTime, gameObjects);
             ball.Update(gameTime, gameObjects);
+
+            //ballRectangle = new Rectangle((int)ballPosition.X, (int)ballPosition.Y,
+                //ball.texture.Width, ball.texture.Height);
+            //ballOrigin = new Vector2(ballRectangle.Width / 2, ballRectangle.Height / 2);
+            // rotation += .1f; //spinning
             base.Update(gameTime);
         }
 
@@ -137,9 +156,17 @@ namespace Pong
             spriteBatch.Begin();
             playerPaddle.Draw(spriteBatch);
             computerPaddle.Draw(spriteBatch);
+            //ballLocation = new Vector2(playerPaddle.texture.Width + (ball.texture.Height / 2), 0); //spinning
+            //sourceRectangle = new Rectangle(0, 0, ball.Width, ball.Height); //spinning
+            //ballOrigin = new Vector2(ballRectangle.Width / 2, ballRectangle.Height / 2); //spinning
+            //spriteBatch.Draw(ball.texture, ballLocation, sourceRectangle, Color.White, rotation, ballOrigin, 1.0f, SpriteEffects.None, 1); //spinning
+            //ball.AttachTo(playerPaddle); //spinning
             ball.Draw(spriteBatch);
-            //spriteBatch.Draw(hotdog, position: Vector2.Zero);
+            //ball.Draw(spriteBatch, ballPosition, null, Color.Beige, rotation, ballOrigin, 1f, SpriteEffects.None, 0); //spinning
+            //spriteBatch.Draw(plaindogTexture, ballPosition, null, Color.White, rotation, ballOrigin, 1f, SpriteEffects.None, 0); //spinning
+            //spriteBatch.Draw(hotdog, position: Vector2.Zero); //spinning
 
+            score.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

@@ -97,3 +97,14 @@
 /processorParam:TextureFormat=Color
 /build:graphics/plain_hotdog.png
 
+#begin fonts/GameScreenFont16px.xnb
+/copy:fonts/GameScreenFont16px.xnb
+
+#begin fonts/TitleFont.xnb
+/copy:fonts/TitleFont.xnb
+
+#begin fonts/HighScoreFont.xnb
+/importer:
+/processor:
+/copy:fonts/HighScoreFont.xnb
+
