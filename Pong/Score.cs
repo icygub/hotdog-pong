@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Pong
@@ -24,6 +25,22 @@ namespace Pong
             var position = new Vector2(xPosition, gameBoundaries.Height - 100);
 
             spriteBatch.DrawString(font, scoreText, position, Color.Black);
+        }
+
+        public void Update(GameTime gameTime, GameObjects gameObjects)
+        {
+            if(gameObjects.Ball.Location.X + gameObjects.Ball.Width < 0)
+            {
+                ComputerScore++;
+                gameObjects.Ball.AttachTo(gameObjects.PlayerPaddle);
+                //gameObjects.Ball.AttachTo(gameObjects.PlayerPaddle);
+            }
+            if (gameObjects.Ball.Location.X + gameObjects.Ball.Width > gameBoundaries.Width)
+            {
+                PlayerScore++;
+                //gameObjects.Ball.AttachTo(gameObjects.ComputerPaddle);
+                gameObjects.Ball.AttachTo(gameObjects.PlayerPaddle);
+            }
         }
     }
 }

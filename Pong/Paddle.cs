@@ -30,29 +30,28 @@ namespace Pong
         {
             if(playerType == PlayerTypes.Computer)
             {
+                // computer follows the ball down
                 if(gameObjects.Ball.Location.Y + gameObjects.Ball.Height < Location.Y)
                 {
-                    Velocity = new Vector2(0, -17f);
+                    Velocity = new Vector2(0, -23f);
                 }
+                // computer follows the ball upp
                 if (gameObjects.Ball.Location.Y > Location.Y + Height)
                 {
-                    Velocity = new Vector2(0, 17f);
+                    Velocity = new Vector2(0, 23f);
                 }
             }
             if(playerType == PlayerTypes.Human)
             {
-                //human
-            }
-            
-            //move up
-            if (gameObjects.TouchInput.Up)
-            {
-                Velocity = new Vector2(0, -17f);
-            }
+                if (gameObjects.TouchInput.Up)
+                {
+                    Velocity = new Vector2(0, -17f);
+                }
 
-            if (gameObjects.TouchInput.Down)
-            {
-                Velocity = new Vector2(0, 17f);
+                if (gameObjects.TouchInput.Down)
+                {
+                    Velocity = new Vector2(0, 17f);
+                }
             }
 
             base.Update(gameTime, gameObjects);

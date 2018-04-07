@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Pong;
 
 namespace Pong
 {
@@ -21,16 +22,16 @@ namespace Pong
 
         protected override void CheckBounds()
         {
-            if(Location.Y >= (gameBoundaries.Height - texture.Height) || Location.Y <= 0)
+            if (Location.Y >= (gameBoundaries.Height - texture.Height) || Location.Y <= 0)
             {
                 var newVelocity = new Vector2(Velocity.X, -Velocity.Y);
                 Velocity = newVelocity;
             }
-            if(Location.X <= 0 || Location.X >= (gameBoundaries.Width - texture.Width))
-            {
-                var newVelocity = new Vector2(-Velocity.X, Velocity.Y);
-                Velocity = newVelocity;
-            }
+            //if (Location.X <= 0 || Location.X >= (gameBoundaries.Width - texture.Width))
+            //{
+            //    var newVelocity = new Vector2(-Velocity.X, Velocity.Y);
+            //    Velocity = newVelocity;
+            //}
         }
 
         public override void Update(GameTime gameTime, GameObjects gameObjects)
@@ -41,26 +42,48 @@ namespace Pong
                 var newVelocity = new Vector2(15f, attachedToPaddle.Velocity.Y * 1.2f);
                 Velocity = newVelocity;
                 attachedToPaddle = null;
-                
             }
 
-            // keeps "ball" attached to "paddle"
-            if (attachedToPaddle != null)
+            // keeps "ball" attached to "paddle" while ball has not been fired
+            else if (attachedToPaddle != null)
             {
                 Location.Y = attachedToPaddle.Location.Y;
                 Location.X = attachedToPaddle.Location.X + attachedToPaddle.Width;
             }
-            //else if (BoundingBox.Intersects(gameObjects.PlayerPaddle.BoundingBox) && 
-            //    (BoundingBox.X >= gameObjects.PlayerPaddle.BoundingBox.X && BoundingBox.X <= gameObjects.PlayerPaddle.BoundingBox.X) ||
-            //    BoundingBox.Intersects(gameObjects.ComputerPaddle.BoundingBox) && (BoundingBox.Bottom == gameObjects.ComputerPaddle.BoundingBox.Top))
-            //{
-            //    Velocity = new Vector2(Velocity.X, -Velocity.Y);
-            //    Console.Write("First case");
-            //}
+
+            
+
+            // this makes the ball deflect off the paddles
             else if (BoundingBox.Intersects(gameObjects.PlayerPaddle.BoundingBox) || BoundingBox.Intersects(gameObjects.ComputerPaddle.BoundingBox))
             {
-                Velocity = new Vector2(-Velocity.X, Velocity.Y);
-                Console.Write("Second case");
+                if (Math.Abs(BoundingBox.Bottom - gameObjects.PlayerPaddle.BoundingBox.Top) >=0 && Math.Abs(BoundingBox.Bottom - gameObjects.PlayerPaddle.BoundingBox.Top) <=10)
+                {
+                    Velocity = new Vector2(-Velocity.X, Velocity.Y);
+                }
+                else
+                {
+                    //if(gameObjects.PlayerPaddle.Velocity.Y < 0 && Velocity.Y > 0 ||
+                    //    gameObjects.PlayerPaddle.Velocity.Y > 0 && Velocity.Y < 0)
+                    //{
+                    //    Velocity = new Vector2(-Velocity.X, (int)(Velocity.Y * 1.4));
+
+                    //}
+                    Velocity = new Vector2(-Velocity.X, Velocity.Y);
+
+                }
+                
+
+                //// deflect off tops and bottom sizes
+                //if (Location.Y + Width - gameObjects.PlayerPaddle.Location.Y == 0)
+                //{
+                //    Velocity = new Vector2(Velocity.X, -Velocity.Y);
+                //}
+                //// deflect off front size
+                //else
+                //{
+                //    Velocity = new Vector2(-Velocity.X, Velocity.Y);
+                //}
+
             }
 
 
@@ -68,10 +91,10 @@ namespace Pong
         }
 
         public void AttachTo(Paddle paddle)
-        {
-            Console.Write("testing");
+        {          
             attachedToPaddle = paddle;
             Location.X = attachedToPaddle.Width;
+            
         }
     }
 }
