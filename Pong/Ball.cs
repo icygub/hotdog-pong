@@ -8,22 +8,15 @@ namespace Pong
     public class Ball : Sprite
     {
 
-        private Paddle attachedToPaddle;
+        private Paddle _attachedToPaddle;
+        public Vector2 Origin;
+        private float _rotation = 0f;
 
-        public Ball(Texture2D texture, Vector2 location) : base(texture, location)
-        {
-            //attachedToPaddle = null;
-        }
-
-        public Ball(Texture2D texture, Vector2 location, Rectangle gameBoundaries) : base(texture, location, gameBoundaries)
-        {
-            //attachedToPaddle = null;
-        }
+        public Ball(Texture2D texture, Vector2 location, Rectangle gameBoundaries) : base(texture, location, gameBoundaries) { }
 
         protected override void CheckBounds()
         {
-            if (Location.Y >= (gameBoundaries.Height - texture.Height) || Location.Y <= 0)
-            {
+            if (Location.Y >= (gameBoundaries.Height - texture.Height/2) || (Location.Y - texture.Height/2 ) <= 0) {// the texture.Height divisions are for top and bottom bounds while ball is spinning
                 var newVelocity = new Vector2(Velocity.X, -Velocity.Y);
                 Velocity = newVelocity;
             }
@@ -37,64 +30,40 @@ namespace Pong
         public override void Update(GameTime gameTime, GameObjects gameObjects)
         {
             // fires the "ball"
-            if (gameObjects.TouchInput.Tap && attachedToPaddle != null)
+            if (gameObjects.TouchInput.Tap && _attachedToPaddle != null)
             {
-                var newVelocity = new Vector2(15f, attachedToPaddle.Velocity.Y * 1.2f);
+                var newVelocity = new Vector2(15f, _attachedToPaddle.Velocity.Y * 1.2f);
                 Velocity = newVelocity;
-                attachedToPaddle = null;
+                _attachedToPaddle = null;
             }
 
             // keeps "ball" attached to "paddle" while ball has not been fired
-            else if (attachedToPaddle != null)
+            else if (_attachedToPaddle != null)
             {
-                Location.Y = attachedToPaddle.Location.Y;
-                Location.X = attachedToPaddle.Location.X + attachedToPaddle.Width;
-            }
+                Location.Y = _attachedToPaddle.Location.Y + _attachedToPaddle.Height/2;
+                Location.X = _attachedToPaddle.Location.X + this.Height;
+            }         
 
-            
-
-            // this makes the ball deflect off the paddles
+            // this makes the ball deflect off the sides of the paddles
             else if (BoundingBox.Intersects(gameObjects.PlayerPaddle.BoundingBox) || BoundingBox.Intersects(gameObjects.ComputerPaddle.BoundingBox))
             {
-                if (Math.Abs(BoundingBox.Bottom - gameObjects.PlayerPaddle.BoundingBox.Top) >=0 && Math.Abs(BoundingBox.Bottom - gameObjects.PlayerPaddle.BoundingBox.Top) <=10)
-                {
-                    Velocity = new Vector2(-Velocity.X, Velocity.Y);
-                }
-                else
-                {
-                    //if(gameObjects.PlayerPaddle.Velocity.Y < 0 && Velocity.Y > 0 ||
-                    //    gameObjects.PlayerPaddle.Velocity.Y > 0 && Velocity.Y < 0)
-                    //{
-                    //    Velocity = new Vector2(-Velocity.X, (int)(Velocity.Y * 1.4));
-
-                    //}
-                    Velocity = new Vector2(-Velocity.X, Velocity.Y);
-
-                }
-                
-
-                //// deflect off tops and bottom sizes
-                //if (Location.Y + Width - gameObjects.PlayerPaddle.Location.Y == 0)
-                //{
-                //    Velocity = new Vector2(Velocity.X, -Velocity.Y);
-                //}
-                //// deflect off front size
-                //else
-                //{
-                //    Velocity = new Vector2(-Velocity.X, Velocity.Y);
-                //}
-
+                Velocity = new Vector2(-Velocity.X, Velocity.Y);              
             }
 
+            // makes the ball constantly rotate
+            _rotation += .04f;
 
             base.Update(gameTime, gameObjects);
         }
 
         public void AttachTo(Paddle paddle)
         {          
-            attachedToPaddle = paddle;
-            Location.X = attachedToPaddle.Width;
-            
+            _attachedToPaddle = paddle;
+        }
+
+        public override void Draw(SpriteBatch spriteBatch) {
+            //spriteBatch.Draw(texture, Location); // without spinning
+            spriteBatch.Draw(this.texture, Location, null, Color.White, _rotation, Origin, 1, SpriteEffects.None, 0f); // with spinning
         }
     }
 }
