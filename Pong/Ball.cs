@@ -10,17 +10,13 @@ namespace Pong
 
         private Paddle _attachedToPaddle;
         public Vector2 Origin;
-        private float _rotation;
+        private float _rotation = 0f;
 
-        public Ball(Texture2D texture, Vector2 location, Rectangle gameBoundaries) : base(texture, location, gameBoundaries)
-        {
-            _rotation = 0f;
-        }
+        public Ball(Texture2D texture, Vector2 location, Rectangle gameBoundaries) : base(texture, location, gameBoundaries) { }
 
         protected override void CheckBounds()
         {
-            if (Location.Y >= (gameBoundaries.Height - texture.Height) || Location.Y <= 0)
-            {
+            if (Location.Y >= (gameBoundaries.Height - texture.Height/2) || (Location.Y - texture.Height/2 ) <= 0) {// the texture.Height divisions are for top and bottom bounds while ball is spinning
                 var newVelocity = new Vector2(Velocity.X, -Velocity.Y);
                 Velocity = newVelocity;
             }
@@ -54,7 +50,9 @@ namespace Pong
                 Velocity = new Vector2(-Velocity.X, Velocity.Y);              
             }
 
+            // makes the ball constantly rotate
             _rotation += .04f;
+
             base.Update(gameTime, gameObjects);
         }
 
