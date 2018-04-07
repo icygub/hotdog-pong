@@ -9,6 +9,7 @@ namespace Pong
     {
 
         private Paddle attachedToPaddle;
+        public Vector2 Origin;
 
         public Ball(Texture2D texture, Vector2 location) : base(texture, location)
         {
@@ -48,44 +49,14 @@ namespace Pong
             else if (attachedToPaddle != null)
             {
                 Location.Y = attachedToPaddle.Location.Y;
-                Location.X = attachedToPaddle.Location.X + attachedToPaddle.Width;
-            }
+                Location.X = attachedToPaddle.Location.X + this.Height;
+            }         
 
-            
-
-            // this makes the ball deflect off the paddles
+            // this makes the ball deflect off the sides of the paddles
             else if (BoundingBox.Intersects(gameObjects.PlayerPaddle.BoundingBox) || BoundingBox.Intersects(gameObjects.ComputerPaddle.BoundingBox))
             {
-                if (Math.Abs(BoundingBox.Bottom - gameObjects.PlayerPaddle.BoundingBox.Top) >=0 && Math.Abs(BoundingBox.Bottom - gameObjects.PlayerPaddle.BoundingBox.Top) <=10)
-                {
-                    Velocity = new Vector2(-Velocity.X, Velocity.Y);
-                }
-                else
-                {
-                    //if(gameObjects.PlayerPaddle.Velocity.Y < 0 && Velocity.Y > 0 ||
-                    //    gameObjects.PlayerPaddle.Velocity.Y > 0 && Velocity.Y < 0)
-                    //{
-                    //    Velocity = new Vector2(-Velocity.X, (int)(Velocity.Y * 1.4));
-
-                    //}
-                    Velocity = new Vector2(-Velocity.X, Velocity.Y);
-
-                }
-                
-
-                //// deflect off tops and bottom sizes
-                //if (Location.Y + Width - gameObjects.PlayerPaddle.Location.Y == 0)
-                //{
-                //    Velocity = new Vector2(Velocity.X, -Velocity.Y);
-                //}
-                //// deflect off front size
-                //else
-                //{
-                //    Velocity = new Vector2(-Velocity.X, Velocity.Y);
-                //}
-
+                Velocity = new Vector2(-Velocity.X, Velocity.Y);              
             }
-
 
             base.Update(gameTime, gameObjects);
         }
@@ -93,8 +64,6 @@ namespace Pong
         public void AttachTo(Paddle paddle)
         {          
             attachedToPaddle = paddle;
-            Location.X = attachedToPaddle.Width;
-            
         }
     }
 }

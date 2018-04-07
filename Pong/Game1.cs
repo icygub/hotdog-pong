@@ -15,7 +15,6 @@ namespace Pong {
         private Paddle        playerPaddle;
         private Paddle        computerPaddle;
         private Ball          ball;
-        private Vector2       ballOrigin; // need to implement
         private Score         score;
 
         public Game1() {
@@ -30,8 +29,7 @@ namespace Pong {
         }
 
         protected override void Initialize() {           
-            TouchPanel.EnabledGestures = GestureType.VerticalDrag | GestureType.Flick | GestureType.Tap;
-            
+            TouchPanel.EnabledGestures = GestureType.VerticalDrag | GestureType.Flick | GestureType.Tap;          
             base.Initialize();
         }
 
@@ -49,6 +47,7 @@ namespace Pong {
             computerPaddle = new Paddle(plaindogPaddleTexture, computerPaddleLocation, gameBoundaries, PlayerTypes.Computer);
 
             ball = new Ball(ballTexture, Vector2.Zero, gameBoundaries);
+            ball.Origin = new Vector2(ball.texture.Width / 2, ball.texture.Height / 2);
             ball.AttachTo(playerPaddle);
 
             score = new Score(Content.Load<SpriteFont>("fonts/HighScoreFont"), gameBoundaries);
@@ -104,10 +103,10 @@ namespace Pong {
             playerPaddle.Draw(spriteBatch);
             computerPaddle.Draw(spriteBatch);
             //ballLocation = new Vector2(playerPaddle.texture.Width + (ball.texture.Height / 2), 0); //spinning
-            //sourceRectangle = new Rectangle(0, 0, ball.Width, ball.Height); //spinning
+            
             //ballOrigin = new Vector2(ballRectangle.Width / 2, ballRectangle.Height / 2); //spinning
             //spriteBatch.Draw(ball.texture, ballLocation, sourceRectangle, Color.White, rotation, ballOrigin, 1.0f, SpriteEffects.None, 1); //spinning
-            //ball.AttachTo(playerPaddle); //spinning
+            
             ball.Draw(spriteBatch);
             //ball.Draw(spriteBatch, ballPosition, null, Color.Beige, rotation, ballOrigin, 1f, SpriteEffects.None, 0); //spinning
             //spriteBatch.Draw(plaindogTexture, ballPosition, null, Color.White, rotation, ballOrigin, 1f, SpriteEffects.None, 0); //spinning
