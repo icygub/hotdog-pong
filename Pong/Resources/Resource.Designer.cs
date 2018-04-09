@@ -45,10 +45,13 @@ namespace Pong
 		{
 			
 			// aapt resource value: 0x7f020000
-			public const int Icon = 2130837504;
+			public const int big_dog = 2130837504;
 			
 			// aapt resource value: 0x7f020001
-			public const int Splash = 2130837505;
+			public const int Icon = 2130837505;
+			
+			// aapt resource value: 0x7f020002
+			public const int Splash = 2130837506;
 			
 			static Drawable()
 			{
@@ -81,6 +84,9 @@ namespace Pong
 		
 		public partial class Style
 		{
+			
+			// aapt resource value: 0x7f040001
+			public const int Theme_Big_Dog = 2130968577;
 			
 			// aapt resource value: 0x7f040000
 			public const int Theme_Splash = 2130968576;

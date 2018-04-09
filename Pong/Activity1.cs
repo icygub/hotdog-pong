@@ -5,10 +5,10 @@ using Android.Views;
 
 namespace Pong
 {
-    [Activity(Label = "Pong"
+    [Activity(Label = "Hotdog Pong"
         , MainLauncher = true
-        , Icon = "@drawable/icon"
-        , Theme = "@style/Theme.Splash"
+        , Icon = "@drawable/big_dog"
+        , Theme = "@style/Theme.Big_Dog"
         , AlwaysRetainTaskState = true
         , LaunchMode = Android.Content.PM.LaunchMode.SingleInstance
         , ScreenOrientation = ScreenOrientation.FullUser

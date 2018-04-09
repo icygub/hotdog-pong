@@ -1,7 +1,5 @@
-﻿namespace Pong
-{
-    public class GameObjects
-    {
+﻿namespace Pong {
+    public class GameObjects {
         private TouchInput touchInput;
 
         public GameObjects() { }
