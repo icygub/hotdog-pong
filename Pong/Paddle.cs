@@ -45,12 +45,12 @@ namespace Pong
             {
                 if (gameObjects.TouchInput.Up)
                 {
-                    Velocity = new Vector2(0, -9f);
+                    Velocity = new Vector2(0, -7f);
                 }
 
                 if (gameObjects.TouchInput.Down)
                 {
-                    Velocity = new Vector2(0, 9f);
+                    Velocity = new Vector2(0, 7f);
                 }
             }
 
