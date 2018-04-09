@@ -11,7 +11,7 @@ namespace Pong {
     }
 
     public class Paddle : Sprite {
-        private readonly PlayerTypes playerType;
+        public readonly PlayerTypes playerType;
 
         public Paddle(Texture2D texture, Vector2 location, Rectangle screenBounds, PlayerTypes playerType) 
             : base(texture, location, screenBounds) {
@@ -22,11 +22,11 @@ namespace Pong {
             if(playerType == PlayerTypes.Computer) {
                 // computer follows the ball down
                 if(gameObjects.Ball.Location.Y + gameObjects.Ball.Height < Location.Y) {
-                    Velocity = new Vector2(0, -10.5f);
+                    Velocity = new Vector2(0, -15f);
                 }
                 // computer follows the ball upp
                 if (gameObjects.Ball.Location.Y > Location.Y + Height) {
-                    Velocity = new Vector2(0, 10.5f);
+                    Velocity = new Vector2(0, 15f);
                 }
             }
             if(playerType == PlayerTypes.Human) {
