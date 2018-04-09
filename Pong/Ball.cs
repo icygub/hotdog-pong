@@ -11,6 +11,7 @@ namespace Pong
         private Paddle _attachedToPaddle;
         public Vector2 Origin;
         private float _rotation = 0f;
+        private bool lastHitWasRight = false;
 
         public Ball(Texture2D texture, Vector2 location, Rectangle gameBoundaries) : base(texture, location, gameBoundaries) { }
 
@@ -34,7 +35,7 @@ namespace Pong
             // fires the "ball"
             if (gameObjects.TouchInput.Tap && _attachedToPaddle != null)
             {
-                var newVelocity = new Vector2(15f, _attachedToPaddle.Velocity.Y);
+                var newVelocity = new Vector2(15f, _attachedToPaddle.Velocity.Y + 1f);
                 Velocity = newVelocity;
                 _attachedToPaddle = null;
             }
@@ -50,22 +51,42 @@ namespace Pong
             var paddle = isMovingRight ? gameObjects.ComputerPaddle : gameObjects.PlayerPaddle;
             //if (this.BoundingBox.Intersects(paddle.BoundingBox) && IsTouchingTopOf(paddle) || IsTouchingBottomOf(paddle))
             //    Velocity = new Vector2(Velocity.X, -Velocity.Y);
-            if (isMovingRight && this.BoundingBox.Intersects(gameObjects.ComputerPaddle.BoundingBox))// && IsTouchingLeftOf(gameObjects.ComputerPaddle))
-                Velocity = new Vector2(-Velocity.X, Velocity.Y);
-            else if (!isMovingRight && this.BoundingBox.Intersects(gameObjects.PlayerPaddle.BoundingBox))// && IsTouchingRightOf(gameObjects.PlayerPaddle))
-                Velocity = new Vector2(-Velocity.X, Velocity.Y);
-            //if (this.Velocity.X > 0) { // if ball is moving right
-            //    if (IsTouchingLeftOf(gameObjects.ComputerPaddle)) // deflect off side of paddle
-            //        Velocity = new Vector2(-Velocity.X, Velocity.Y);
-            //    else // if touching top and bottom of paddle, Velocity.Y is reversed
-            //        Velocity = (IsTouchingTopOf(gameObjects.ComputerPaddle) || IsTouchingBottomOf(gameObjects.ComputerPaddle)) ? new Vector2(Velocity.X, -Velocity.Y) : Velocity;
-            //}
-            //else if (this.Velocity.X < 0) { // if ball is moving left
-            //    if (IsTouchingRightOf(gameObjects.PlayerPaddle)) // deflect off side of paddle
-            //        Velocity = new Vector2(-Velocity.X, Velocity.Y);
-            //    else // if touching top and bottom of paddle, Velocity.Y is reversed
-            //        Velocity = (IsTouchingTopOf(gameObjects.PlayerPaddle) || IsTouchingBottomOf(gameObjects.PlayerPaddle)) ? new Vector2(Velocity.X, -Velocity.Y) : Velocity;
-            //}
+
+
+            // before commit begin
+            //if (isMovingRight && this.BoundingBox.Intersects(gameObjects.ComputerPaddle.BoundingBox))// && IsTouchingLeftOf(gameObjects.ComputerPaddle))
+            //    Velocity = new Vector2(-Velocity.X, Velocity.Y);
+            //else if (!isMovingRight && this.BoundingBox.Intersects(gameObjects.PlayerPaddle.BoundingBox))// && IsTouchingRightOf(gameObjects.PlayerPaddle))
+            //    Velocity = new Vector2(-Velocity.X, Velocity.Y);
+            // before commit end
+            if(isMovingRight && !lastHitWasRight) {
+                if (IsTouchingBottomOf(paddle)) { // if touching top and bottom of paddle, Velocity.Y is reversed
+                    Velocity = new Vector2(Velocity.X, -Velocity.Y);
+                    lastHitWasRight = true;
+                }
+                else if (IsTouchingLeftOf(paddle)) {// deflect off side of paddle
+                    Velocity = new Vector2(-Velocity.X, Velocity.Y);
+                    lastHitWasRight = true;
+                }
+
+            }
+            else if (!isMovingRight && lastHitWasRight) {
+                if (IsTouchingBottomOf(paddle)) { // if touching top and bottom of paddle, Velocity.Y is reversed
+                    Velocity = new Vector2(Velocity.X, -Velocity.Y);
+                    lastHitWasRight = false;
+                }
+                else if (IsTouchingRightOf(paddle)) {// deflect off side of paddle
+                    Velocity = new Vector2(-Velocity.X, Velocity.Y);
+                    lastHitWasRight = false;
+                }
+                //if (IsTouchingRightOf(paddle)) {// deflect off side of paddle
+                //    Velocity = new Vector2(-Velocity.X, Velocity.Y);
+                //    lastHitWasRight = false;
+                //}
+                //else // if touching top and bottom of paddle, Velocity.Y is reversed
+                //    Velocity = (IsTouchingTopOf(paddle) || IsTouchingBottomOf(paddle)) ? new Vector2(Velocity.X, -Velocity.Y) : Velocity;
+            }
+
 
             // makes the ball constantly rotate
             //_rotation += .04f;
@@ -76,6 +97,7 @@ namespace Pong
         public void AttachTo(Paddle paddle)
         {          
             _attachedToPaddle = paddle;
+            lastHitWasRight = false;
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -86,25 +108,28 @@ namespace Pong
 
         #region Collision Detecting
         private bool IsTouchingLeftOf(Paddle paddle) {
-            return this.BoundingBox.Right + this.Velocity.X > paddle.BoundingBox.Left &&
-                   this.BoundingBox.Top > paddle.BoundingBox.Bottom &&
-                   this.BoundingBox.Bottom < paddle.BoundingBox.Top;          
+            return this.BoundingBox.Right  >= paddle.BoundingBox.Left &&
+                   this.BoundingBox.Top < paddle.BoundingBox.Bottom &&
+                   this.BoundingBox.Bottom > paddle.BoundingBox.Top;          
         }
 
         private bool IsTouchingRightOf(Paddle paddle) {
-            return this.BoundingBox.Left + this.Velocity.X < paddle.BoundingBox.Right &&
-                   this.BoundingBox.Top > paddle.BoundingBox.Bottom &&
-                   this.BoundingBox.Bottom < paddle.BoundingBox.Top;
+            return this.BoundingBox.Left <= paddle.BoundingBox.Right &&
+                   this.BoundingBox.Top < paddle.BoundingBox.Bottom &&
+                   this.BoundingBox.Bottom > paddle.BoundingBox.Top;
         }
 
         private bool IsTouchingTopOf(Paddle paddle) {
-            return this.BoundingBox.Bottom + this.Velocity.Y < paddle.BoundingBox.Top &&
-                   this.BoundingBox.Right > paddle.BoundingBox.Left &&
-                   this.BoundingBox.Left < paddle.BoundingBox.Right; // actually, is this line necessary?
+            return true;//this.BoundingBox.Bottom - this.Velocity.Y < paddle.BoundingBox.Top &&
+                   //this.BoundingBox.Right > paddle.BoundingBox.Left &&
+                   //this.BoundingBox.Left < paddle.BoundingBox.Right; // actually, is this line necessary?
+            //return this.BoundingBox.Bottom + this.Velocity.Y < paddle.BoundingBox.Top &&
+            //       this.BoundingBox.Right > paddle.BoundingBox.Left &&
+            //       this.BoundingBox.Left < paddle.BoundingBox.Right; // actually, is this line necessary?
         }
 
         private bool IsTouchingBottomOf(Paddle paddle) {
-            return this.BoundingBox.Top + this.Velocity.Y > paddle.BoundingBox.Bottom &&
+            return this.BoundingBox.Top > paddle.BoundingBox.Bottom &&
                    this.BoundingBox.Right > paddle.BoundingBox.Left &&
                    this.BoundingBox.Left < paddle.BoundingBox.Right; // actually, is this line necessary?
         }

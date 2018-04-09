@@ -18,7 +18,7 @@ namespace Pong
             }
         }
 
-        public Vector2 Velocity { get; protected set; }
+        public Vector2 Velocity { get; set; }
         //private Vector2 _velocity;
 
 

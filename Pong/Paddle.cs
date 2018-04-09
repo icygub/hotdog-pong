@@ -33,12 +33,12 @@ namespace Pong
                 // computer follows the ball down
                 if(gameObjects.Ball.Location.Y + gameObjects.Ball.Height < Location.Y)
                 {
-                    Velocity = new Vector2(0, -9.5f);
+                    Velocity = new Vector2(0, -10.5f);
                 }
                 // computer follows the ball upp
                 if (gameObjects.Ball.Location.Y > Location.Y + Height)
                 {
-                    Velocity = new Vector2(0, 9.5f);
+                    Velocity = new Vector2(0, 10.5f);
                 }
             }
             if(playerType == PlayerTypes.Human)
