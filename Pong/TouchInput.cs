@@ -1,7 +1,5 @@
-﻿namespace Pong
-{
-    public class TouchInput
-    {
+﻿namespace Pong {
+    public class TouchInput {
         private bool _up;
         private bool _down;
         private bool _tap;

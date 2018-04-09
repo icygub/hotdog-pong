@@ -47,7 +47,7 @@ namespace Pong {
             computerPaddle = new Paddle(plaindogPaddleTexture, computerPaddleLocation, gameBoundaries, PlayerTypes.Computer);
 
             ball = new Ball(ballTexture, Vector2.Zero, gameBoundaries);
-            ball.Origin = new Vector2(ball.texture.Width / 2, ball.texture.Height / 2);
+            ball.Origin = new Vector2(ball.Texture.Width / 2, ball.Texture.Height / 2);
             ball.AttachTo(playerPaddle);
 
             score = new Score(Content.Load<SpriteFont>("fonts/HighScoreFont"), gameBoundaries);
@@ -60,37 +60,27 @@ namespace Pong {
         }
 
         protected override void Update(GameTime gameTime) {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                Exit();
-
-            gameObjects.TouchInput = new TouchInput(); //game crashes when this line runs
+            gameObjects.TouchInput = new TouchInput();
             GetTouchInput();
 
             playerPaddle.Update(gameTime, gameObjects);
             computerPaddle.Update(gameTime, gameObjects);
             ball.Update(gameTime, gameObjects);
             score.Update(gameTime, gameObjects);
-            //ballRectangle = new Rectangle((int)ballPosition.X, (int)ballPosition.Y,
-                //ball.texture.Width, ball.texture.Height);
-            //ballOrigin = new Vector2(ballRectangle.Width / 2, ballRectangle.Height / 2);
-            // rotation += .1f; //spinning
+            //ballOrigin = new Vector2(ballRectangle.Width / 2, ballRectangle.Height / 2); // used for ball spinning
             base.Update(gameTime);
         }
 
         private void GetTouchInput() {
-            while(TouchPanel.IsGestureAvailable)
-            {
+            while(TouchPanel.IsGestureAvailable) {
                 var gesture = TouchPanel.ReadGesture();
-                if(gesture.Delta.Y > 0)
-                {
+                if(gesture.Delta.Y > 0) {
                     gameObjects.TouchInput.Down = true;
                 }
-                if(gesture.Delta.Y < 0)
-                {
+                if(gesture.Delta.Y < 0) {
                     gameObjects.TouchInput.Up = true;
                 }
-                if(gesture.Delta.Y == 0)
-                {
+                if(gesture.Delta.Y == 0) {
                     gameObjects.TouchInput.Tap = true;
                 }
             }
@@ -101,17 +91,8 @@ namespace Pong {
 
             spriteBatch.Begin();
             playerPaddle.Draw(spriteBatch);
-            computerPaddle.Draw(spriteBatch);
-            //ballLocation = new Vector2(playerPaddle.texture.Width + (ball.texture.Height / 2), 0); //spinning
-            
-            //ballOrigin = new Vector2(ballRectangle.Width / 2, ballRectangle.Height / 2); //spinning
-            //spriteBatch.Draw(ball.texture, ballLocation, sourceRectangle, Color.White, rotation, ballOrigin, 1.0f, SpriteEffects.None, 1); //spinning
-            
+            computerPaddle.Draw(spriteBatch);         
             ball.Draw(spriteBatch);
-            //ball.Draw(spriteBatch, ballPosition, null, Color.Beige, rotation, ballOrigin, 1f, SpriteEffects.None, 0); //spinning
-            //spriteBatch.Draw(plaindogTexture, ballPosition, null, Color.White, rotation, ballOrigin, 1f, SpriteEffects.None, 0); //spinning
-            //spriteBatch.Draw(hotdog, position: Vector2.Zero); //spinning
-
             score.Draw(spriteBatch);
             spriteBatch.End();
 

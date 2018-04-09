@@ -4,4 +4,8 @@
     <item name="android:windowBackground">@drawable/splash</item>
     <item name="android:windowNoTitle">true</item>
   </style>
+  <style name="Theme.Big_Dog" parent="android:Theme">
+    <item name="android:windowBackground">@drawable/big_dog</item>
+    <item name="android:windowNoTitle">true</item>
+  </style>
 </resources>
