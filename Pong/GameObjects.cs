@@ -10,5 +10,6 @@
         
         public TouchInput TouchInput { get => touchInput; set => touchInput = value; }
         public Score Score { get; set; }
+        public GameEnd GameEnd { get; set; }
     }
 }

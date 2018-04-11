@@ -61,6 +61,7 @@
     <Compile Include="Activity1.cs" />
     <Compile Include="Ball.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="GameEnd.cs" />
     <Compile Include="GameObjects.cs" />
     <Compile Include="Paddle.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
@@ -92,7 +93,9 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\AndroidManifest.xml" />
+    <None Include="Properties\AndroidManifest.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\hotdog.png">

@@ -16,6 +16,7 @@ namespace Pong {
         private Paddle        computerPaddle;
         private Ball          ball;
         private Score         score;
+        private GameEnd       gameEnd;
 
         public Game1() {
             GraphicsDeviceManager graphics;
@@ -51,8 +52,8 @@ namespace Pong {
             ball.AttachTo(playerPaddle);
 
             score = new Score(Content.Load<SpriteFont>("fonts/HighScoreFont"), gameBoundaries);
-
-            gameObjects = new GameObjects { PlayerPaddle = playerPaddle, ComputerPaddle = computerPaddle, Ball = ball, Score = score };
+            gameEnd = new GameEnd(Content.Load<SpriteFont>("fonts/HighScoreFont"), gameBoundaries);
+            gameObjects = new GameObjects { PlayerPaddle = playerPaddle, ComputerPaddle = computerPaddle, Ball = ball, Score = score, GameEnd = gameEnd };
         }
 
         protected override void UnloadContent() {
@@ -67,6 +68,7 @@ namespace Pong {
             computerPaddle.Update(gameTime, gameObjects);
             ball.Update(gameTime, gameObjects);
             score.Update(gameTime, gameObjects);
+            gameEnd.Update(gameTime, gameObjects);
             //ballOrigin = new Vector2(ballRectangle.Width / 2, ballRectangle.Height / 2); // used for ball spinning
             base.Update(gameTime);
         }
@@ -94,6 +96,7 @@ namespace Pong {
             computerPaddle.Draw(spriteBatch);         
             ball.Draw(spriteBatch);
             score.Draw(spriteBatch);
+            gameEnd.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);
